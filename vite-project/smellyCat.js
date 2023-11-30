@@ -1,17 +1,22 @@
 import axios from "axios";
 
-export async function fetchRandomCatGif() {
-    try {
-        const response = await axios.get("https://cataas.com//cat/gif");
+export function fetchRandomCatGif() {
+    const apiURL = "https://cataas.com/cat?json=true";
 
-    if (response.status !== 200) {
-        throw new Error("Network response was not ok");
-    }
+    axios.get(apiURL)
+    .then((response) => response.json())
+    .then((data) => {
+      const catData = data;
+      const catImageContainer = document.getElementById("catImageContainer");
 
-        const data = response.data;
-        return data;
-    } catch (error) {
-        console.error("Axios error:", error);
-        throw error;
-    }
+      if (catData._id) {
+        const catImage = document.createElement("img");
+        catImage.src = `https://cataas.com/cat/${catData._id}`;
+        catImage.alt = "Random Cat";
+        catImageContainer.appendChild(catImage);
+      }
+    })
+        .catch((error) => {
+            console.error('Error fetching cat image:', error);
+        })
 }
